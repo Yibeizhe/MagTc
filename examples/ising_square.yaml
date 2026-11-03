@@ -1,0 +1,22 @@
+# 2D square-lattice Ising model, H = -J sum_<ij> s_i s_j, J = 1 meV.
+# Onsager: k_B T_c = 2J / ln(1 + sqrt 2) = 2.269185 J  ->  T_c = 26.333 K for J = 1 meV.
+name: ising_square
+description: Square-lattice nearest-neighbour Ising model (Onsager benchmark)
+reference: "L. Onsager, Phys. Rev. 65, 117 (1944), doi:10.1103/PhysRev.65.117"
+spin: ising
+lattice:
+  type: square
+exchange:
+  - name: J1
+    J: 1.0
+    bonds: [[0, 0, 1, 0], [0, 0, 0, 1]]
+order: FM
+mc:
+  L: 32
+  Tmax: 30.0
+  Tmin: 23.0
+  step: 0.5
+  ntherm: 5000
+  nmeas: 50000
+  every: 10
+  nseeds: 8

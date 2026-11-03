@@ -1,0 +1,23 @@
+name: tests
+on:
+  push:
+  pull_request:
+jobs:
+  pytest:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        backend: [numba, python]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - run: pip install -e ".[test]"
+      - if: matrix.backend == 'numba'
+        run: pip install numba
+      - if: matrix.backend == 'numba'
+        run: pytest -m "not slow" -v
+      # without numba only the light tests are affordable (pure-Python kernel)
+      - if: matrix.backend == 'python'
+        run: pytest -m "not slow" -v tests/test_regression_reference.py tests/test_ground.py tests/test_model_cli.py tests/test_ising.py::test_onsager_helper

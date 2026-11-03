@@ -1,0 +1,33 @@
+# Monolayer VN, b = 2.7342 A: parameters of vn_tc_batch_L50_prod.py (TABLE_S3, first row),
+# published in J. Chem. Phys. 2026 (monolayer VN).  JCP T_C = 419.7 K.
+# Mapping used by kernels/tc_jcp_rect.py: Ja -> J1 (+-a), Jb -> J2 (+-b), Jab -> J3 (diagonals),
+# D = MAE_perp / 4 = 0.5711 / 4 meV, written as K = (D, D, 0), which equals -D (S^z)^2 + const.
+name: VN_b2p7342
+description: Monolayer VN at b = 2.7342 A, rectangular J1-J3 + easy-axis anisotropy (JCP 2026 protocol)
+reference: "Monolayer VN, J. Chem. Phys. (2026); parameters from TABLE_S3 of vn_tc_batch_L50_prod.py, github.com/Yibeizhe/MagTc"
+spin: heisenberg
+lattice:
+  type: rectangular
+exchange:            # meV, J > 0 ferromagnetic, each pair once
+  - name: Ja
+    J: 32.36
+    bonds: [[0, 0, 1, 0]]
+  - name: Jb
+    J: -7.74
+    bonds: [[0, 0, 0, 1]]
+  - name: Jab
+    J: 32.51
+    bonds: [[0, 0, 1, 1], [0, 0, 1, -1]]
+anisotropy:
+  K: [0.142775, 0.142775, 0.0]   # (Kx, Ky, Kz) meV;  D = 0.5711/4
+order: FM
+mc:                  # JCP 2026 protocol (the defaults, written out)
+  L: 50
+  Tmax: 480
+  Tmin: 360
+  step: 5
+  ntherm: 100000
+  nmeas: 200000
+  every: 20
+  nseeds: 8
+  seed0: 20260616
