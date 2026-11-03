@@ -1,0 +1,57 @@
+# Monolayer CrI3: honeycomb lattice of Cr (S = 3/2), nearest-neighbour XXZ exchange.
+#
+# SOURCE (one DFT paper):
+#   J. L. Lado and J. Fernandez-Rossier, "On the origin of magnetic anisotropy in two
+#   dimensional CrI3", 2D Materials 4, 035002 (2017), doi:10.1088/2053-1583/aa75ed, arXiv:1704.03849.
+#   The paper's spin model is XXZ (J, lambda) with a negligible single-ion term D, so D = 0 here.
+#
+# !! VERIFICATION STATUS !!
+#   This file was written in a session whose network policy blocked arXiv, IOP and Crossref.
+#   The journal reference and the statement "J and lambda non-zero, single-ion D negligible"
+#   were confirmed from search-engine abstracts only.  The numbers J = 2.2 meV and
+#   lambda = 0.09 meV and the factor convention below were NOT checked against the paper text
+#   (the DOI was not resolved either).  Check them against the paper before quoting any T_C
+#   obtained with this file.
+#
+# Conversion to MagTc (classical unit vectors, each pair once):
+#   paper (as assumed here): H = -(1/2) sum_{i != j, NN} [ J S_i.S_j + lambda S_i^z S_j^z ],  |S| = 3/2
+#   =>  per pair:  Jxy = J S^2,   Jz = (J + lambda) S^2           (classical S^2 normalisation)
+#       Jxy = 2.2 * 2.25 = 4.95 meV,   Jz = 2.29 * 2.25 = 5.1525 meV
+#
+# Experimental monolayer T_C ~ 45 K (Huang et al., Nature 546, 270 (2017), doi:10.1038/nature22391).
+# Parameters are NOT tuned to that value.
+name: CrI3_Lado2017
+description: Monolayer CrI3, honeycomb nearest-neighbour XXZ model of Lado & Fernandez-Rossier (2017)
+reference: "J. L. Lado, J. Fernandez-Rossier, 2D Mater. 4, 035002 (2017), doi:10.1088/2053-1583/aa75ed (values not verified against full text, see header)"
+spin: heisenberg
+lattice:
+  type: honeycomb
+  a1: [1.0, 0.0]                 # in units of the Cr-Cr lattice constant a (~6.9 A)
+  a2: [0.5, 0.8660254037844386]
+  sublattices: [[0.0, 0.0], [0.3333333333333333, 0.3333333333333333]]   # Cr A and Cr B
+exchange:
+  # nearest neighbours A(i,j) - B(i+da, j+db), distance a/sqrt(3); 3 bonds per cell
+  - name: J1
+    Jxy: 4.95
+    Jz: 5.1525
+    bonds: [[0, 1, 0, 0], [0, 1, -1, 0], [0, 1, 0, -1]]
+  # The paper gives no J2, J3.  Templates if another source provides them (each pair once):
+  #   J2 (same sublattice, distance a):        [[0,0,1,0],[0,0,0,1],[0,0,1,-1],[1,1,1,0],[1,1,0,1],[1,1,1,-1]]
+  #   J3 (A-B across the hexagon, 2a/sqrt 3):  [[0,1,-1,1],[0,1,1,-1],[0,1,-1,-1]]
+anisotropy:
+  K: [0.0, 0.0, 0.0]             # single-ion term negligible in the source
+order_parameters:
+  FM:     {q: [0, 0], signs: [1, 1]}
+  Neel:   {q: [0, 0], signs: [1, -1]}
+  zigzag: {q: [1, 0], signs: [1, 1]}
+  stripy: {q: [1, 0], signs: [1, -1]}
+order: FM
+mc:
+  L: 24                          # 24 x 24 cells = 1152 Cr spins
+  Tmax: 70
+  Tmin: 20
+  step: 2.5
+  ntherm: 20000
+  nmeas: 40000
+  every: 20
+  nseeds: 8
