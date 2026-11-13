@@ -133,7 +133,7 @@ in the same shell; give explicit bonds when that distinction matters. MagTc 1.x 
 * JCP mode against `kernels/tc_jcp_rect.py`: identical bit for bit (Numba and pure Python).
 * VN, b = 2.7342 Å, L = 50:
   * JCP moves, reduced sweeps: 419.1 ± 2.1 K;
-  * fast moves: see RESULTS.md;
+  * Metropolis + over-relaxation + Wolff: 417.7 ± 0.9 K, with 20× more independent samples;
   * JCP paper: 419.7 K.
 * Exact XXZ + K dimer: every move set and parallel tempering agree within statistical error.
 * 2D Ising: Onsager energy within 1 %; chi_abs and C_v peaks near T_c.
