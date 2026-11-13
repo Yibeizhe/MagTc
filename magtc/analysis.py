@@ -10,7 +10,7 @@ import math
 
 import numpy as np
 
-from .kernel import kB
+from .kernels import kB
 
 
 def peak(T, X):
@@ -55,10 +55,10 @@ def _estimate(runs, key):
 
 def check_compatible(runs):
     keys = {(r.get("model_hash"), tuple(np.atleast_1d(r["L"]).tolist()), r.get("order"),
-             r.get("ntherm"), r.get("nmeas"), r.get("every"), r.get("numba"),
-             tuple(row["T"] for row in r["rows"])) for r in runs}
+             r.get("ntherm"), r.get("nmeas"), r.get("every"), r.get("numba"), r.get("protocol", "anneal"),
+             json.dumps(r.get("moves"), sort_keys=True), tuple(row["T"] for row in r["rows"])) for r in runs}
     if len(keys) != 1:
-        raise ValueError("runs differ in model, size, order parameter, MC settings, backend or ladder")
+        raise ValueError("runs differ in model, size, order parameter, MC settings, moves, backend or ladder")
     sd = [r["seed"] for r in runs]
     if len(set(sd)) != len(sd):
         raise ValueError("duplicate seeds among the input files: %s" % sd)
@@ -77,6 +77,9 @@ def analyse(runs):
                peak_at_edge=chi["at_edge"], per_seed_chi_abs_peak=chi["per_seed"],
                Tc_Cv=cv["Tc"], Tc_Cv_err=cv["err"], Cv_peak_at_edge=cv["at_edge"],
                Tc_chi_z=chz["Tc"],
+               tau_M_max_sweeps=max(row.get("tau_M", 0.0) for r in runs for row in r["rows"]),
+               n_indep_min=min(row["n"] * r["every"] / max(2 * row.get("tau_M", 0.0), r["every"])
+                               for r in runs for row in r["rows"]),
                curve={k: v.tolist() for k, v in c.items()})
     return res
 
@@ -89,6 +92,9 @@ def summary_text(res):
                                                 "   [PEAK AT EDGE OF LADDER - extend the scan]" if res["peak_at_edge"] else ""),
              "  T_C (C_v peak)     = %s K%s" % (pm(res["Tc_Cv"], res["Tc_Cv_err"]),
                                                 "   [at edge]" if res["Cv_peak_at_edge"] else "")]
+    lines.append("  max tau_int(|M|) = %.0f sweeps; fewest independent samples per T and seed = %.0f%s"
+                 % (res["tau_M_max_sweeps"], res["n_indep_min"],
+                    "   [FEW INDEPENDENT SAMPLES - lengthen the run]" if res["n_indep_min"] < 50 else ""))
     if res["n_seeds"] > 1:
         lines.append("  chi_abs error: jackknife %.2f K, single-seed SEM %.2f K (larger is quoted)"
                      % (res["Tc_chi_abs_jackknife_err"], res["Tc_chi_abs_sem_single_seed"]))

@@ -1,0 +1,10 @@
+# 3D benchmark: classical Heisenberg ferromagnet on the simple-cubic lattice, J = 1 meV.
+# T_c = 1.4430 J/k_B = 16.745 K  (Peczak, Ferrenberg, Landau, Phys. Rev. B 43, 6087 (1991),
+# doi:10.1103/PhysRevB.43.6087; K_c = 0.693035).
+name: sc_heisenberg
+reference: "Peczak, Ferrenberg, Landau, PRB 43, 6087 (1991)"
+structure: {dim: 3, lattice: [[1, 0, 0], [0, 1, 0], [0, 0, 1]], sites: [{label: M, frac: [0, 0, 0]}]}
+interactions:
+  - {name: J1, J: 1.0, shell: 1}
+mc: {L: 16, Tmax: 19.0, Tmin: 15.0, step: 0.25, ntherm: 2000, nmeas: 20000, every: 5, nseeds: 4,
+     moves: {metropolis: uniform, overrelax: 2, wolff: 4}}

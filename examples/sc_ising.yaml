@@ -1,0 +1,10 @@
+# 3D benchmark: Ising ferromagnet on the simple-cubic lattice, J = 1 meV.
+# T_c = 4.511528 J/k_B = 52.354 K (Ferrenberg, Xu, Landau, Phys. Rev. E 97, 043301 (2018)).
+name: sc_ising
+reference: "Ferrenberg, Xu, Landau, PRE 97, 043301 (2018)"
+spin: ising
+structure: {dim: 3, lattice: [[1, 0, 0], [0, 1, 0], [0, 0, 1]], sites: [{frac: [0, 0, 0]}]}
+interactions:
+  - {name: J1, J: 1.0, shell: 1}
+mc: {L: 16, Tmax: 56.0, Tmin: 49.0, step: 0.5, ntherm: 2000, nmeas: 20000, every: 5, nseeds: 4,
+     moves: {metropolis: uniform, wolff: 4}}

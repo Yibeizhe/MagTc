@@ -4,8 +4,8 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "magtc"
-version = "1.0.0"
-description = "Classical Monte Carlo Curie/Neel temperatures of two-dimensional magnets (JCP 2026 protocol)"
+version = "2.0.0"
+description = "Classical Monte Carlo Curie/Neel temperatures of 2D and 3D magnets, with VASP energy mapping"
 readme = "README.md"
 license = {text = "MIT"}
 requires-python = ">=3.8"
@@ -23,7 +23,7 @@ magtc = "magtc.cli:main"
 Homepage = "https://github.com/Yibeizhe/MagTc"
 
 [tool.setuptools]
-packages = ["magtc"]
+packages = ["magtc", "magtc.dft"]
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]

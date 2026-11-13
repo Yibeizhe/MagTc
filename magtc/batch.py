@@ -5,8 +5,8 @@ import shlex
 from multiprocessing import get_context
 
 from .analysis import analyse, load_runs, summary_text
-from .model import load_model, seeds as model_seeds
-from .runner import apply_overrides, run_seed
+from .model import apply_overrides, load_model, seeds as model_seeds
+from .simulate import run_seed
 
 
 def _worker(args):
@@ -68,10 +68,13 @@ def write_pbs(model_path, outdir, script, walltime="72:00:00", queue=None, setup
     for k, v in (overrides or {}).items():
         if v is None or k.startswith("_"):
             continue
-        if k == "L" and isinstance(v, (list, tuple)):
-            extra += " --L %d %d" % tuple(v)
+        if k == "moves":
+            for mk, mval in v.items():
+                extra += " --%s %s" % (mk.replace("_", "-"), mval)
+        elif k == "L" and isinstance(v, (list, tuple)):
+            extra += " --L " + " ".join(str(int(x)) for x in v)
         else:
-            extra += " --%s %s" % (k, v)
+            extra += " --%s %s" % (k.replace("_", "-"), v)
     text = PBS_TEMPLATE.format(
         jobname=("mtc_" + m["name"])[:15], walltime=walltime, last=n - 1,
         queue=("#PBS -q %s\n" % queue) if queue else "", version=__version__, script=script,

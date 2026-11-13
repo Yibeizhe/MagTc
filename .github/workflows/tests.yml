@@ -20,4 +20,4 @@ jobs:
         run: pytest -m "not slow" -v
       # without numba only the light tests are affordable (pure-Python kernel)
       - if: matrix.backend == 'python'
-        run: pytest -m "not slow" -v tests/test_regression_reference.py tests/test_ground.py tests/test_model_cli.py tests/test_ising.py::test_onsager_helper
+        run: pytest -m "not slow" -v tests/test_reference.py tests/test_structure_ground.py tests/test_dft.py tests/test_cli_model.py
